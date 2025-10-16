@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Clock, CheckCircle, Truck, MapPin, Phone } from 'lucide-react';
@@ -10,7 +10,7 @@ import BottomNav from '../../components/BottomNav';
 import OrderCard from '../../components/OrderCard';
 import { storage } from '../../lib/storage';
 
-export default function TrackPage() {
+function TrackContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
   const [orders, setOrders] = useState([]);
@@ -223,5 +223,20 @@ export default function TrackPage() {
 
       <BottomNav />
     </div>
+  );
+}
+
+export default function TrackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">📦</div>
+          <p className="text-gray-600">Loading your orders...</p>
+        </div>
+      </div>
+    }>
+      <TrackContent />
+    </Suspense>
   );
 }
